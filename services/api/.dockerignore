@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!app/
+!app/**
+!migrations/
+!migrations/**
+**/__pycache__

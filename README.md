@@ -4,7 +4,7 @@
 
 An evaluation-first platform for teams building with AI coding agents. Instead of trusting code because an AI says "done," we want evidence: **did the change work, did it pass the right checks, what did it cost, and is it safe to approve?**
 
-> **Project status:** Planning and design. The diagrams and workflow below illustrate the intended product; they are not screenshots of a working application.
+> **Project status:** The read-only evaluation showcase is available locally. It uses labeled sample runs to demonstrate checks, traces, and comparisons.
 
 ![Human software team and AI engineering platform analogy](assets/human-team-analogy.svg)
 
@@ -127,7 +127,12 @@ Developer / Engineering Team
 
 ## Current status and contributing
 
-This public repository currently contains planning documents and original explanatory SVG diagrams. There is no working app or supported installation procedure yet. We welcome design discussion through GitHub issues once contribution and governance policies are finalized.
+Start the [Next.js showcase](apps/web/README.md) with bundled samples, or run
+the [FastAPI service](services/api/README.md) to exercise the development API and
+authenticated workspace reads. See the [deployment guide](docs/09-DEPLOYMENT.md)
+for the Vercel and Render configuration and smoke checks.
+
+We welcome design discussion through GitHub issues.
 
 ## License
 
