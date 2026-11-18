@@ -33,3 +33,19 @@ schema privileges and a separate runtime role with SELECT on the required tables
 
 To run PostgreSQL integration tests, set `PLATFORM_TEST_DATABASE_URL` to a
 disposable database. The test suite creates and removes a unique schema per test.
+
+## Read endpoints
+
+The OpenAPI document at `/openapi.json` describes the versioned routes. Workspace
+endpoints are:
+
+- `GET /v1/projects/{project_id}/datasets`
+- `GET /v1/projects/{project_id}/runs`
+- `GET /v1/runs/{run_id}`
+- `GET /v1/runs/{run_id}/results`
+
+Successful workspace responses identify their source as `workspace`. In
+development, `/v1/demo/datasets`, `/v1/demo/runs`, `/v1/demo/runs/{run_id}` and
+`/v1/demo/runs/{run_id}/results` provide deterministic seeded samples. The API
+labels every sample response with `source: "sample"` and omits these routes from
+production.
