@@ -1,5 +1,10 @@
 # Data Model and API Draft
 
+See the [API guide](../services/api/README.md) for the implemented read
+endpoints and migration instructions. This document sketches the longer-term
+model. The proposed completed-run import is tracked in the
+[Phase 2 backlog](10-PHASE-2-BACKLOG.md).
+
 ## Core entities
 - users(id, external_subject, created_at)
 - workspaces(id, name, created_at)

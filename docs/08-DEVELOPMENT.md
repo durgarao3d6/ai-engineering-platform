@@ -31,13 +31,11 @@ Type checking, linting, dependency pinning, structured logging, explicit errors,
 ## Pull request template
 Describe purpose, linked requirement, behavior changes, tests, security impact, and rollback plan.
 
-## Initial issues
-1. Confirm MVP scope and acceptance criteria.
-2. Write ADR for sandbox isolation.
-3. Define OpenAPI and database migration v1.
-4. Build evaluation fixtures and scoring rules.
-5. Define GitHub App permissions and approval policy.
-6. Establish CI and secret scanning.
+## Planning
+
+Use the [roadmap](07-ROADMAP.md) for release scope and the
+[Phase 2 backlog](10-PHASE-2-BACKLOG.md) for the next proposed issues.
+The [deployment guide](09-DEPLOYMENT.md) tracks the Phase 1 verification steps.
 
 ## Frontend checks
 
