@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { formatCost, formatDuration, getRunMetrics, sampleRuns } from "../../../lib/evaluations";
+import { formatCost, formatDuration, getRunMetrics, type EvaluationRun } from "../../../lib/evaluations";
+
+import { listEvaluationRuns } from "../../../lib/evaluation-client";
 
 function signed(value: number, decimals = 0) {
   return `${value > 0 ? "+" : ""}${value.toFixed(decimals)}`;
@@ -14,9 +16,9 @@ export default async function Comparison({
 }: {
   searchParams: Promise<{ baseline?: string; candidate?: string }>;
 }) {
-  const selection = await searchParams;
-  const baseline = sampleRuns.find((run) => run.id === (selection.baseline ?? sampleRuns[0]?.id));
-  const candidate = sampleRuns.find((run) => run.id === (selection.candidate ?? sampleRuns[1]?.id));
+  const [selection, runs] = await Promise.all([searchParams, listEvaluationRuns()]);
+  const baseline = runs.find((run) => run.id === (selection.baseline ?? runs[0]?.id));
+  const candidate = runs.find((run) => run.id === (selection.candidate ?? runs[1]?.id));
 
   return (
     <main className="dashboard">
@@ -24,16 +26,18 @@ export default async function Comparison({
       <h1>Compare runs</h1>
       <p className="demo">Sample data · Differences are illustrative.</p>
       <form className="compare-form" action="/dashboard/compare">
-        <label>Baseline
-          <select name="baseline" defaultValue={baseline?.id}>
-            {sampleRuns.map((run) => <option key={run.id} value={run.id}>{run.name}</option>)}
+        <div>
+          <label htmlFor="baseline">Baseline</label>
+          <select id="baseline" name="baseline" defaultValue={baseline?.id}>
+            {runs.map((run) => <option key={run.id} value={run.id}>{run.name}</option>)}
           </select>
-        </label>
-        <label>Candidate
-          <select name="candidate" defaultValue={candidate?.id}>
-            {sampleRuns.map((run) => <option key={run.id} value={run.id}>{run.name}</option>)}
+        </div>
+        <div>
+          <label htmlFor="candidate">Candidate</label>
+          <select id="candidate" name="candidate" defaultValue={candidate?.id}>
+            {runs.map((run) => <option key={run.id} value={run.id}>{run.name}</option>)}
           </select>
-        </label>
+        </div>
         <button className="action" type="submit">Compare</button>
       </form>
       {baseline && candidate && baseline.id !== candidate.id && baseline.datasetId === candidate.datasetId ? (
@@ -44,8 +48,8 @@ export default async function Comparison({
 }
 
 function ComparisonResults({ baseline, candidate }: {
-  baseline: (typeof sampleRuns)[number];
-  candidate: (typeof sampleRuns)[number];
+  baseline: EvaluationRun;
+  candidate: EvaluationRun;
 }) {
   const baseRate = getRunMetrics(baseline).passRate;
   const candidateRate = getRunMetrics(candidate).passRate;

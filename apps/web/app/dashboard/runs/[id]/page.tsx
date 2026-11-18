@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatCost, formatDuration, getRunMetrics, sampleRuns } from "../../../../lib/evaluations";
+import { formatCost, formatDuration, getRunMetrics } from "../../../../lib/evaluations";
+
+import { getEvaluationRun } from "../../../../lib/evaluation-client";
 
 export default async function RunDetails({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const run = sampleRuns.find((item) => item.id === id);
+  const run = await getEvaluationRun(id);
   if (!run) notFound();
 
   const { passed, total } = getRunMetrics(run);
