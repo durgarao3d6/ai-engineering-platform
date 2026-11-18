@@ -1,6 +1,6 @@
 # Dashboard app (Issue #1)
 
-Next.js App Router + TypeScript starter for the AI Engineering Platform. The landing page is a concept preview, not a working evaluation engine.
+Next.js App Router, TypeScript, and Tailwind starter for the AI Engineering Platform. The landing page is a concept preview, not a working evaluation engine.
 
 ## Local setup
 
@@ -8,7 +8,7 @@ Requires Node.js 20+.
 
 ```bash
 cd apps/web
-npm install
+npm ci
 npm run dev
 ```
 
