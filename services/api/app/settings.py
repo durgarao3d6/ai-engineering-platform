@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "production"
     cors_origins: list[AnyHttpUrl] = []
+    database_url: SecretStr | None = None
 
     @field_validator("cors_origins")
     @classmethod

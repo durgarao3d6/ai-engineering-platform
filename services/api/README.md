@@ -11,3 +11,25 @@ Check `http://localhost:8000/health` and interactive API documentation at `http:
 The API accepts an optional local `.env` file. By default it starts with production settings and an empty CORS allowlist.
 
 Run tests with `uv run --locked pytest`.
+
+## PostgreSQL and private access
+
+Set `PLATFORM_DATABASE_URL` to a PostgreSQL connection string and run
+`uv run --locked python -m app.migrate`. Migrations apply in order in a
+transaction and subsequent runs skip installed versions.
+
+Private reads require an opaque bearer token. An administrator provisions a user,
+workspace membership, and high-entropy token through a trusted administrative
+process. Store only the token's SHA-256 digest in `access_tokens` with an expiry.
+The caller supplies the original token over HTTPS. Revocation sets `revoked_at`,
+and removing membership immediately removes read access to that workspace.
+The reader and admin roles can both read their workspace. Write routes and
+external identity-provider integration are outside the read-only showcase.
+
+Every private read joins through project ownership and the caller's current
+workspace membership. Requests for another workspace's individual records return
+the same response as requests for unknown records. Use a migration role with
+schema privileges and a separate runtime role with SELECT on the required tables.
+
+To run PostgreSQL integration tests, set `PLATFORM_TEST_DATABASE_URL` to a
+disposable database. The test suite creates and removes a unique schema per test.
