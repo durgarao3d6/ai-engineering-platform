@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from psycopg.errors import InsufficientPrivilege, UndefinedTable
+
 from . import demo, reads
+from .db import connection
 from .settings import Settings
 
 
@@ -22,6 +25,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @application.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @application.get("/ready")
+    def ready() -> dict[str, str]:
+        try:
+            with connection(settings.database_url) as conn:
+                conn.read_only = True
+                conn.execute("SELECT 1 FROM access_tokens LIMIT 0")
+        except (UndefinedTable, InsufficientPrivilege):
+            raise HTTPException(503, "Database unavailable") from None
+        return {"status": "ready"}
 
     return application
 

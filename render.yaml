@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ai-engineering-platform-api
+    runtime: docker
+    rootDir: services/api
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /ready
+    autoDeployTrigger: "off"
+    envVars:
+      - key: PLATFORM_ENVIRONMENT
+        value: production
+      - key: PLATFORM_DATABASE_URL
+        sync: false
+      - key: PLATFORM_CORS_ORIGINS
+        sync: false
