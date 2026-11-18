@@ -4,7 +4,7 @@ Next.js App Router, TypeScript, and Tailwind starter for the AI Engineering Plat
 
 ## Local setup
 
-Requires Node.js 20+.
+Use Node.js 22 to match CI.
 
 ```bash
 cd apps/web

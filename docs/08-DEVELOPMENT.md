@@ -38,3 +38,16 @@ Describe purpose, linked requirement, behavior changes, tests, security impact, 
 4. Build evaluation fixtures and scoring rules.
 5. Define GitHub App permissions and approval policy.
 6. Establish CI and secret scanning.
+
+## Frontend checks
+
+Use Node.js 22 and run the same checks as the Web CI job from `apps/web`.
+
+```sh
+npm ci
+npm run lint
+npm run typecheck
+NEXT_TELEMETRY_DISABLED=1 npm run build
+```
+
+The job runs on pull requests and pushes to `main`. It builds with fixture defaults and requires no deployment credentials.
