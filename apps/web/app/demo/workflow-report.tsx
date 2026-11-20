@@ -25,7 +25,7 @@ export default function WorkflowReport({ report }: { report: EvaluationReport })
     <>
       <section className="workflow-panel run-card" aria-labelledby="evaluate-heading">
         <h2 id="evaluate-heading">Evaluate</h2>
-        <p>{definition.name} · v{definition.version}</p>
+        <p>Example PR #{definition.review.pullRequest} · {definition.name} · task v{definition.version}</p>
         <div className="workflow-metrics">
           {[baseline, candidate].map((run) => (
             <div key={run.configuration}>

@@ -11,6 +11,9 @@ import sys
 from uuid import uuid4
 
 import psycopg
+from psycopg import sql
+
+from .migrate import migrate
 
 
 def issue_token(conn: psycopg.Connection, subject: str) -> str:
@@ -59,6 +62,23 @@ def issue_token(conn: psycopg.Connection, subject: str) -> str:
     return token
 
 
+def link_github_account(conn: psycopg.Connection, subject: str, github_id: int) -> None:
+    with conn.transaction():
+        conn.execute("SET LOCAL statement_timeout = '15s'")
+        linked = conn.execute(
+            """
+            UPDATE users u SET github_user_id = %s
+            WHERE u.external_subject = %s
+              AND (u.github_user_id IS NULL OR u.github_user_id = %s)
+              AND EXISTS (SELECT 1 FROM memberships m WHERE m.user_id = u.id)
+            RETURNING u.id
+            """,
+            (github_id, subject, github_id),
+        ).fetchone()
+        if linked is None:
+            raise ValueError("This local account has no workspace access or is linked to another GitHub user.")
+
+
 def read_clipboard() -> str:
     result = subprocess.run(
         ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", "Get-Clipboard -Raw"],
@@ -74,7 +94,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--subject", required=True, help="Stable local account name. Reuse it to issue a new token.")
     parser.add_argument("--windows-clipboard", action="store_true", help="Read the admin URL from the clipboard and replace it with the token.")
+    parser.add_argument("--github-user-id", type=int, help="Link a GitHub numeric user ID to an existing local account.")
+    parser.add_argument(
+        "--setup-github-runtime-role", metavar="ROLE",
+        help="Apply migrations and grant the named API database role read access to the GitHub identity columns.",
+    )
     args = parser.parse_args()
+    if args.setup_github_runtime_role and args.github_user_id is None:
+        parser.error("--setup-github-runtime-role requires --github-user-id.")
+    if args.github_user_id is not None and not 0 < args.github_user_id < 10**15:
+        parser.error("--github-user-id must be a positive GitHub numeric user ID.")
     if not re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", args.subject):
         parser.error("--subject must contain 1 to 64 letters, digits, hyphens, or underscores.")
     if args.windows_clipboard and os.name != "nt":
@@ -94,10 +123,19 @@ def main() -> int:
         print("Use the Render External Database URL for the migration administrator.", file=sys.stderr)
         return 1
 
-    print("Connecting to PostgreSQL and issuing a reader token…", file=sys.stderr, flush=True)
+    subject = f"local:{args.subject}"
+    print("Connecting to PostgreSQL…", file=sys.stderr, flush=True)
     try:
         with psycopg.connect(url, sslmode="require", connect_timeout=10) as conn:
-            token = issue_token(conn, f"local:{args.subject}")
+            if args.setup_github_runtime_role:
+                migrate(conn)
+                conn.execute(sql.SQL("GRANT SELECT (id, github_user_id) ON users TO {}").format(
+                    sql.Identifier(args.setup_github_runtime_role),
+                ))
+            if args.github_user_id is not None:
+                link_github_account(conn, subject, args.github_user_id)
+            else:
+                token = issue_token(conn, subject)
     except psycopg.OperationalError:
         print("Could not complete the PostgreSQL operation. Check the external URL, credentials, and Render IP allowlist.", file=sys.stderr)
         return 1
@@ -107,6 +145,10 @@ def main() -> int:
     except ValueError as error:
         print(error, file=sys.stderr)
         return 1
+
+    if args.github_user_id is not None:
+        print("GitHub account linked. You can now use GitHub sign-in when it is enabled.", file=sys.stderr)
+        return 0
 
     if args.windows_clipboard:
         try:

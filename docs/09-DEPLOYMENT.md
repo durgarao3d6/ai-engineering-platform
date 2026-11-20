@@ -41,3 +41,42 @@
 7. If checks fail, restore the previously verified frontend and API revisions.
    Restore the database from backup if needed. Keep schema changes compatible
    with the previous application revision during the rollout window.
+
+## Enable GitHub sign-in for the private workspace
+
+GitHub sign-in is optional. The app associates a verified GitHub numeric user ID
+with an existing workspace user and keeps checking that user's database
+membership. It requests basic profile access and stores no GitHub access token
+in its session. Repository permissions and automatic account creation are
+outside this setup.
+
+1. Find the GitHub numeric ID in
+   `https://api.github.com/users/YOUR_GITHUB_USERNAME`. Confirm that the account
+   belongs to the person who already has access to the workspace.
+2. From `services/api`, apply the migration, grant the API runtime role read
+   access to the identity columns, and link the verified GitHub account. On
+   Windows, copy the migration administrator's external database URL, then
+   type this command with the actual GitHub numeric ID and runtime role:
+
+   ```powershell
+   uv run --locked python -m app.provision_workspace --subject first-login --github-user-id 123456 --setup-github-runtime-role showcase_runtime --windows-clipboard
+   ```
+
+   Without the clipboard flag the command reads `PLATFORM_DATABASE_URL` or
+   prompts for it. Keep the subject used to provision the original project.
+   Omit `--setup-github-runtime-role` when linking additional accounts after setup.
+
+3. Register a [GitHub OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
+   under the deployment owner's account. Set the homepage to your Vercel HTTPS
+   origin and its callback to that origin followed by
+   `/api/auth/callback/github`.
+4. Generate two independent random secrets of at least 32 bytes. Put one in
+   `NEXTAUTH_SECRET` on Vercel. Put the other in
+   `WORKSPACE_LOGIN_SIGNING_KEY` on Vercel and
+   `PLATFORM_WORKSPACE_LOGIN_SIGNING_KEY` on Render. Deploy Render and verify
+   `/ready`.
+5. In Vercel Production, set `NEXTAUTH_URL` to your Vercel HTTPS origin and
+   set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` from the OAuth App. Deploy
+   Vercel. Select **Continue with GitHub** on `/workspace` and verify that the
+   linked user can see its project. Verify an unlinked account sees no workspace
+   data. Short-lived access tokens remain available as a fallback.

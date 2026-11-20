@@ -1,6 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
+import { getGithubWorkspaceAssertion } from "./workspace-login";
 
 const sessionCookie = "workspace_session";
 const cookieOptions = {
@@ -10,8 +11,12 @@ const cookieOptions = {
   sameSite: "lax" as const,
 };
 
-export async function getWorkspaceToken() {
-  return (await cookies()).get(sessionCookie)?.value;
+export async function getWorkspaceCredentials() {
+  const manual = (await cookies()).get(sessionCookie)?.value;
+  if (manual) return { token: manual, method: "token" as const };
+
+  const github = await getGithubWorkspaceAssertion();
+  if (github) return { token: github, method: "github" as const };
 }
 
 export async function setWorkspaceToken(token: string) {

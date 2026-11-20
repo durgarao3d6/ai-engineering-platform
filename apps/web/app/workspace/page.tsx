@@ -1,13 +1,19 @@
 import Link from "next/link";
 import { listProjects, workspaceConfigured, WorkspaceApiError } from "../../lib/workspace-api";
-import { getWorkspaceToken } from "../../lib/workspace-session";
-import { signOut } from "./actions";
+import { getWorkspaceCredentials } from "../../lib/workspace-session";
+import { githubLoginConfigured } from "../../lib/workspace-login";
+import { GitHubSignIn, WorkspaceSignOut } from "./github-controls";
 import { SignInForm } from "./sign-in-form";
 
-export default async function WorkspacePage() {
+export default async function WorkspacePage({ searchParams }: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const configured = workspaceConfigured();
-  const token = configured ? await getWorkspaceToken() : undefined;
-  const projects = token ? await loadProjects(token) : null;
+  const github = githubLoginConfigured();
+  const credentials = configured ? await getWorkspaceCredentials() : undefined;
+  const projects = credentials ? await loadProjects(credentials.token) : null;
+  const { error } = await searchParams;
+  const unlinked = credentials?.method === "github" && projects === null;
 
   return (
     <main className="dashboard workspace">
@@ -17,10 +23,25 @@ export default async function WorkspacePage() {
       </nav>
       <div className="workspace-heading">
         <h1>Private workspace</h1>
-        {projects && <form action={signOut}><button className="workspace-button">Sign out</button></form>}
+        {credentials && <WorkspaceSignOut github={github} />}
       </div>
       {!configured ? <p>Private workspace access is unavailable on this deployment.</p> :
-        projects === null ? <SignInForm expired={Boolean(token)} /> :
+        projects === null ? (
+          github ? (
+            <>
+              <section className="run-card workspace-sign-in">
+                <h2>Sign in to review your projects</h2>
+                <p>{unlinked ? "This GitHub account has no linked workspace. Ask your workspace administrator to link it." : "Use the GitHub account linked to your workspace."}</p>
+                {error && <p className="workspace-error" role="alert">GitHub sign-in did not complete. Try again.</p>}
+                <GitHubSignIn />
+              </section>
+              <details className="workspace-section">
+                <summary>Use an access token</summary>
+                <SignInForm expired={credentials?.method === "token"} />
+              </details>
+            </>
+          ) : <SignInForm expired={Boolean(credentials)} />
+        ) :
         projects.length === 0 ? <p>Your account has no projects yet.</p> : (
           <ul className="run-grid" aria-label="Workspace projects">
             {projects.map((project) => (
