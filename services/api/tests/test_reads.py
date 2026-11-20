@@ -38,10 +38,12 @@ def test_production_excludes_sample_routes():
         assert api.get("/v1/demo/runs").status_code == 404
         assert "/v1/demo/runs" not in api.get("/openapi.json").json()["paths"]
         assert api.get(f"/v1/runs/{uuid4()}").status_code == 401
+        assert api.get("/v1/projects").status_code == 401
 
 
 def test_workspace_read_isolation(db_url):
     user, outsider, workspace, other_workspace, project, dataset, run = (uuid4() for _ in range(7))
+    other_project = uuid4()
     token, other_token = uuid4().hex, uuid4().hex
     with psycopg.connect(db_url) as conn:
         conn.execute("INSERT INTO users VALUES (%s, 'reader'), (%s, 'outsider')", (user, outsider))
@@ -54,6 +56,7 @@ def test_workspace_read_isolation(db_url):
                 (hashlib.sha256(credential.encode()).digest(), member),
             )
         conn.execute("INSERT INTO projects VALUES (%s, %s, 'Private project')", (project, workspace))
+        conn.execute("INSERT INTO projects VALUES (%s, %s, 'Other project')", (other_project, other_workspace))
         conn.execute("INSERT INTO datasets VALUES (%s, %s, 'Private dataset', 'v1')", (dataset, project))
         conn.execute(
             """
@@ -67,6 +70,14 @@ def test_workspace_read_isolation(db_url):
     owner = {"Authorization": f"Bearer {token}"}
     other = {"Authorization": f"Bearer {other_token}"}
     with client(database_url=db_url) as api:
+        projects = api.get("/v1/projects", headers=owner)
+        assert projects.headers["Cache-Control"] == "private, no-store"
+        assert projects.json() == {
+            "source": "workspace", "data": [{"id": str(project), "name": "Private project"}],
+        }
+        assert api.get("/v1/projects", headers=other).json() == {
+            "source": "workspace", "data": [{"id": str(other_project), "name": "Other project"}],
+        }
         for collection, record in (("datasets", dataset), ("runs", run)):
             url = f"/v1/projects/{project}/{collection}"
             assert api.get(url).status_code == 401
