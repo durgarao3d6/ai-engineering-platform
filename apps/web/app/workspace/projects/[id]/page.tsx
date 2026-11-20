@@ -63,7 +63,12 @@ export default async function ProjectPage({ params, searchParams }: PageProps) {
           <form action={signOut}><button className="workspace-button">Sign out</button></form>
         </div>
         <h2>Evaluation runs</h2>
-        {runs.length === 0 ? <p>This project has no recorded runs yet.</p> : (
+        {runs.length === 0 ? (
+          <div>
+            <p>This project has no recorded runs yet.</p>
+            <Link className="back-link" href="/demo">Try the workflow with built-in fixtures</Link>
+          </div>
+        ) : (
           <div className="table-scroll" role="region" aria-label="Project runs" tabIndex={0}>
             <table>
               <thead>

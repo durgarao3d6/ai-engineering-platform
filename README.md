@@ -127,6 +127,10 @@ Developer / Engineering Team
 
 ## Current status and contributing
 
+The [interactive workflow demo](https://ai-engineering-platform-eta.vercel.app/demo)
+walks through defining a task, running a built-in benchmark, comparing results,
+inspecting evidence, and approving a report download. It runs in the browser
+using synthetic inputs.
 The [production workspace](https://ai-engineering-platform-eta.vercel.app/)
 opens with token sign-in. Try the
 [sample dashboard](https://ai-engineering-platform-eta.vercel.app/dashboard)
