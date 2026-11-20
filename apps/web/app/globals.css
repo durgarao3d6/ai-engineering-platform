@@ -55,3 +55,42 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .workspace .compare-form > div { min-width: 0; max-width: 100%; }
 .workspace .compare-form select { max-width: 100%; }
 .workspace h3 { margin: 0 0 8px; }
+
+.workflow-intro { max-width: 650px; font-size: 1.05rem; margin-bottom: 28px; }
+.workflow-panel { margin-top: 18px; }
+.workflow-panel > h2 { margin-bottom: 10px; }
+.workflow-form fieldset { min-width: 0; }
+.workflow-fields, .workflow-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.workflow-fields label { display: grid; gap: 6px; align-content: start; }
+.workflow-form input, .workflow-form textarea, .workflow-form select {
+  width: 100%;
+  border: 1px solid #8093ac;
+  border-radius: 6px;
+  background: #0b1220;
+  padding: 8px 10px;
+}
+.workflow-form textarea { min-height: 78px; resize: vertical; }
+.workflow-form td input { min-width: 86px; }
+.workflow :is(input, textarea, summary, [tabindex]):focus-visible { outline: 2px solid #fcd34d; outline-offset: 3px; }
+.workflow button:disabled { opacity: .6; cursor: not-allowed; }
+.workflow-metrics > div { border: 1px solid #31415a; padding: 14px; border-radius: 10px; }
+.workflow-metrics h3 { margin-top: 0; font-size: 1.1rem; }
+.workflow-metrics strong { color: #f8fafc; }
+.workflow-pass { color: #86efac; }
+.workflow-versions, .workflow-evidence { margin-top: 14px; }
+.workflow-versions ol { list-style: decimal; padding-left: 1.5rem; }
+.workflow summary { cursor: pointer; color: #7dd3fc; }
+.workflow-evidence dl {
+  display: grid;
+  grid-template-columns: minmax(95px, max-content) minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 12px 0 0;
+}
+.workflow-evidence dd { color: #a9b9ce; overflow-wrap: anywhere; }
+.workflow-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; align-items: center; }
+.workflow-buttons .action { margin: 0; }

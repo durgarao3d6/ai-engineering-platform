@@ -11,7 +11,10 @@ export default async function WorkspacePage() {
 
   return (
     <main className="dashboard workspace">
-      <Link className="back-link" href="/dashboard">Sample dashboard</Link>
+      <nav className="workspace-nav" aria-label="Workspace navigation">
+        <Link className="back-link" href="/dashboard">Sample dashboard</Link>
+        <Link className="back-link" href="/demo">Run workflow demo</Link>
+      </nav>
       <div className="workspace-heading">
         <h1>Private workspace</h1>
         {projects && <form action={signOut}><button className="workspace-button">Sign out</button></form>}

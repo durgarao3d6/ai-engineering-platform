@@ -10,6 +10,7 @@ export default async function Dashboard() {
       <nav className="workspace-nav" aria-label="Dashboard navigation">
         <Link className="back-link" href="/">AI Engineering Platform</Link>
         <Link className="back-link" href="/workspace">Private workspace</Link>
+        <Link className="back-link" href="/demo">Run workflow demo</Link>
       </nav>
       <h1>Evaluation runs</h1>
       <p className="demo">Sample data · All results, timings, and cost estimates are illustrative.</p>
