@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from psycopg.errors import InsufficientPrivilege, UndefinedTable
+from psycopg.errors import InsufficientPrivilege, UndefinedColumn, UndefinedTable
 
 from . import demo, reads
 from .db import connection
@@ -32,7 +32,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             with connection(settings.database_url) as conn:
                 conn.read_only = True
                 conn.execute("SELECT 1 FROM access_tokens LIMIT 0")
-        except (UndefinedTable, InsufficientPrivilege):
+                if settings.workspace_login_signing_key is not None:
+                    conn.execute("SELECT id, github_user_id FROM users LIMIT 0")
+        except (UndefinedTable, UndefinedColumn, InsufficientPrivilege):
             raise HTTPException(503, "Database unavailable") from None
         return {"status": "ready"}
 

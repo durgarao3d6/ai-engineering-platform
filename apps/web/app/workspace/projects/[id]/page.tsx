@@ -11,8 +11,9 @@ import {
   workspaceConfigured,
   type WorkspaceRun,
 } from "../../../../lib/workspace-api";
-import { getWorkspaceToken } from "../../../../lib/workspace-session";
-import { signOut } from "../../actions";
+import { getWorkspaceCredentials } from "../../../../lib/workspace-session";
+import { githubLoginConfigured } from "../../../../lib/workspace-login";
+import { WorkspaceSignOut } from "../../github-controls";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -20,8 +21,9 @@ type PageProps = {
 };
 
 export default async function ProjectPage({ params, searchParams }: PageProps) {
-  const [{ id }, selection, token] = await Promise.all([params, searchParams, getWorkspaceToken()]);
-  if (!token || !workspaceConfigured()) redirect("/workspace");
+  const [{ id }, selection, credentials] = await Promise.all([params, searchParams, getWorkspaceCredentials()]);
+  if (!credentials || !workspaceConfigured()) redirect("/workspace");
+  const { token } = credentials;
 
   try {
     const project = (await listProjects(token)).find((item) => item.id === id);
@@ -60,7 +62,7 @@ export default async function ProjectPage({ params, searchParams }: PageProps) {
         <Link className="back-link" href="/workspace">Workspace projects</Link>
         <div className="workspace-heading">
           <h1>{project.name}</h1>
-          <form action={signOut}><button className="workspace-button">Sign out</button></form>
+          <WorkspaceSignOut github={githubLoginConfigured()} />
         </div>
         <h2>Evaluation runs</h2>
         {runs.length === 0 ? (

@@ -94,3 +94,13 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .workflow-evidence dd { color: #a9b9ce; overflow-wrap: anywhere; }
 .workflow-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; align-items: center; }
 .workflow-buttons .action { margin: 0; }
+
+.workflow-patch { margin-top: 16px; }
+.workflow-patch figcaption { color: #a9b9ce; font-size: .9rem; margin-bottom: 6px; }
+.workflow-patch pre {
+  overflow-x: auto;
+  border: 1px solid #31415a;
+  border-radius: 8px;
+  padding: 14px;
+  background: #0b1220;
+}

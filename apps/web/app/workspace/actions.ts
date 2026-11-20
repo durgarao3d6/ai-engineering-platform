@@ -6,7 +6,7 @@ import { clearWorkspaceToken, setWorkspaceToken } from "../../lib/workspace-sess
 
 export async function signIn(_previousError: string, formData: FormData): Promise<string> {
   const token = formData.get("token")?.toString().trim();
-  if (!token || !/^[A-Za-z0-9._~+/-]{1,1024}={0,2}$/.test(token)) {
+  if (!token || token.startsWith("github-v1.") || !/^[A-Za-z0-9._~+/-]{1,1024}={0,2}$/.test(token)) {
     return "Enter a valid workspace access token.";
   }
 
@@ -21,6 +21,10 @@ export async function signIn(_previousError: string, formData: FormData): Promis
 
   await setWorkspaceToken(token);
   redirect("/workspace");
+}
+
+export async function prepareGitHubSignIn() {
+  await clearWorkspaceToken();
 }
 
 export async function signOut() {

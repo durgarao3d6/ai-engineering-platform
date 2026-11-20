@@ -21,9 +21,10 @@ def private_reader(
     if credentials is None:
         raise unauthorized()
     response.headers["Cache-Control"] = "private, no-store"
-    with connection(request.app.state.settings.database_url) as conn:
+    settings = request.app.state.settings
+    with connection(settings.database_url) as conn:
         conn.read_only = True
-        yield conn, authenticate(conn, credentials.credentials)
+        yield conn, authenticate(conn, credentials.credentials, settings.workspace_login_signing_key)
 
 
 Reader = Annotated[tuple[Connection, UUID], Depends(private_reader)]

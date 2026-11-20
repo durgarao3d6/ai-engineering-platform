@@ -1,3 +1,10 @@
+export const reviewContext = {
+  repository: "Example checkout service",
+  pullRequest: 42,
+  file: "src/checkout/coupon.ts",
+  title: "Reject expired coupons at checkout",
+} as const;
+
 export const configurations = {
   "checkout-v1": "Checkout v1 · baseline",
   "checkout-v2": "Checkout v2 · validate expiration",
@@ -23,6 +30,7 @@ export type Fixture = {
 
 export type Definition = {
   version: number;
+  review: typeof reviewContext;
   name: string;
   objective: string;
   fixtures: Fixture[];

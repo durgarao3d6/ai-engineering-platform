@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import {
   configurations,
   fixtures,
+  reviewContext,
   type Configuration,
   type Definition,
   type EvaluationReport,
@@ -60,6 +61,7 @@ export default function Workflow() {
     }
     setVersions((previous) => [...previous, {
       version: previous.length + 1,
+      review: reviewContext,
       name,
       objective,
       baseline,
@@ -108,7 +110,7 @@ export default function Workflow() {
         <form className="workflow-form" onSubmit={saveVersion} onChange={() => markDirty(true)}>
           <fieldset disabled={running}>
             <div className="workflow-fields">
-              <label>Task name<input name="name" defaultValue="Checkout coupon validation" maxLength={100} required /></label>
+              <label>Task name<input name="name" defaultValue={reviewContext.title} maxLength={100} required /></label>
               <label>Expected outcome<textarea name="objective" defaultValue="Apply valid discounts, reject expired coupons, and preserve the total when no coupon is supplied." maxLength={500} required /></label>
             </div>
             <div className="workflow-fields">
@@ -166,7 +168,7 @@ export default function Workflow() {
           <WorkflowReport report={report} />
           <section className="workflow-panel run-card" aria-labelledby="control-heading">
             <h2 id="control-heading">Control</h2>
-            <p>Review the result before approving this exact report for download.</p>
+            <p>Approve this PR review report to download the evidence for your team.</p>
             <div className="workflow-buttons">
               <button className="action" onClick={() => setDecision({ status: "approved", decidedAt: new Date().toISOString() })} disabled={decision?.status === "approved"}>Approve report</button>
               <button className="workspace-button" onClick={() => setDecision({ status: "withheld", decidedAt: new Date().toISOString() })} disabled={decision?.status === "withheld"}>Withhold approval</button>
