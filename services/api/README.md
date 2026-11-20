@@ -39,6 +39,7 @@ disposable database. The test suite creates and removes a unique schema per test
 The OpenAPI document at `/openapi.json` describes the versioned routes. Workspace
 endpoints are:
 
+- `GET /v1/projects` lists projects in the caller's workspaces.
 - `GET /v1/projects/{project_id}/datasets`
 - `GET /v1/projects/{project_id}/runs`
 - `GET /v1/runs/{run_id}`

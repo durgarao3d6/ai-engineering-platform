@@ -8,7 +8,7 @@ from psycopg import Connection
 
 from .auth import authenticate, bearer, unauthorized
 from .db import connection
-from .models import Check, Dataset, Payload, Run, RunResults
+from .models import Check, Dataset, Payload, Project, Run, RunResults
 
 router = APIRouter(prefix="/v1", tags=["Workspace reads"])
 
@@ -28,6 +28,21 @@ def private_reader(
 
 Reader = Annotated[tuple[Connection, UUID], Depends(private_reader)]
 RUN_COLUMNS = "r.id::text, r.name, r.dataset_id::text, r.duration_ms, r.estimated_cost_usd"
+
+
+@router.get("/projects")
+def list_projects(reader: Reader) -> Payload[list[Project]]:
+    conn, user = reader
+    rows = conn.execute(
+        """
+        SELECT p.id::text, p.name
+        FROM projects p JOIN memberships m ON m.workspace_id = p.workspace_id
+        WHERE m.user_id = %s
+        ORDER BY p.name, p.id
+        """,
+        (user,),
+    )
+    return Payload(source="workspace", data=[Project(**row) for row in rows])
 
 
 @router.get("/projects/{project_id}/datasets")

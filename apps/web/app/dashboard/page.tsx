@@ -7,7 +7,10 @@ export default async function Dashboard() {
   const runs = await listEvaluationRuns();
   return (
     <main className="dashboard">
-      <Link className="back-link" href="/">AI Engineering Platform</Link>
+      <nav className="workspace-nav" aria-label="Dashboard navigation">
+        <Link className="back-link" href="/">AI Engineering Platform</Link>
+        <Link className="back-link" href="/workspace">Private workspace</Link>
+      </nav>
       <h1>Evaluation runs</h1>
       <p className="demo">Sample data · All results, timings, and cost estimates are illustrative.</p>
       {runs.length > 1 && <Link className="action" href="/dashboard/compare">Compare runs</Link>}

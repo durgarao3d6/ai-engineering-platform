@@ -1,22 +1,12 @@
 import "server-only";
 import { cache } from "react";
 import { z } from "zod";
+import { resultsSchema, runSchema } from "./evaluation-schemas";
 import { sampleRuns, type EvaluationRun } from "./evaluations";
 
 const runId = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
-const runSchema = z.object({
-  id: runId,
-  name: z.string(),
-  datasetId: z.string().min(1),
-  durationMs: z.number().int().nonnegative(),
-  estimatedCostUsd: z.number().nonnegative(),
-});
-
-const resultsSchema = z.object({
-  checks: z.array(z.object({ name: z.string(), passed: z.boolean(), summary: z.string() })),
-  trace: z.array(z.string()),
-});
+const sampleRunSchema = runSchema.extend({ id: runId });
 
 function apiOrigin() {
   const configured = process.env.EVALUATION_API_URL?.trim();
@@ -42,7 +32,7 @@ async function getSample<T>(
   return z.object({ source: z.literal("sample"), data: schema }).parse(await response.json()).data;
 }
 
-async function withResults(origin: string, run: z.infer<typeof runSchema>): Promise<EvaluationRun> {
+async function withResults(origin: string, run: z.infer<typeof sampleRunSchema>): Promise<EvaluationRun> {
   const results = await getSample(origin, `runs/${encodeURIComponent(run.id)}/results`, resultsSchema);
   if (!results) throw new Error("Evaluation API has no results for a listed run.");
   return { ...run, ...results };
@@ -51,7 +41,7 @@ async function withResults(origin: string, run: z.infer<typeof runSchema>): Prom
 export const listEvaluationRuns = cache(async (): Promise<EvaluationRun[]> => {
   const origin = apiOrigin();
   if (!origin) return sampleRuns;
-  const runs = await getSample(origin, "runs", z.array(runSchema));
+  const runs = await getSample(origin, "runs", z.array(sampleRunSchema));
   if (!runs) throw new Error("The development sample endpoint is unavailable.");
   return Promise.all(runs.map((run) => withResults(origin, run)));
 });
@@ -60,6 +50,6 @@ export const getEvaluationRun = cache(async (id: string): Promise<EvaluationRun 
   const origin = apiOrigin();
   if (!origin) return sampleRuns.find((run) => run.id === id) ?? null;
   if (!runId.safeParse(id).success) return null;
-  const run = await getSample(origin, `runs/${encodeURIComponent(id)}`, runSchema);
+  const run = await getSample(origin, `runs/${encodeURIComponent(id)}`, sampleRunSchema);
   return run ? withResults(origin, run) : null;
 });

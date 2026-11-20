@@ -25,3 +25,33 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .dashboard table { width: 100%; border-collapse: collapse; }
 .dashboard caption { text-align: left; font-weight: 700; padding: 8px; }
 .dashboard th, .dashboard td { text-align: left; border-bottom: 1px solid #31415a; padding: 12px 8px; }
+
+.workspace-nav, .workspace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.workspace, .workspace select { overflow-wrap: anywhere; }
+.workspace-section { margin-top: 36px; }
+.workspace-sign-in { display: grid; gap: 12px; max-width: 440px; }
+.workspace-sign-in input {
+  width: 100%;
+  border: 1px solid #8093ac;
+  border-radius: 6px;
+  background: #0b1220;
+  padding: 10px 12px;
+}
+.workspace-sign-in input:focus-visible { outline: 2px solid #fcd34d; outline-offset: 4px; }
+.workspace-sign-in .action { justify-self: start; margin-top: 4px; }
+.workspace-sign-in button:disabled { opacity: .65; }
+.workspace-error { color: #fda4af; }
+.workspace-button {
+  border: 1px solid #8093ac;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+.workspace .compare-form > div { min-width: 0; max-width: 100%; }
+.workspace .compare-form select { max-width: 100%; }
+.workspace h3 { margin: 0 0 8px; }

@@ -15,6 +15,11 @@ class Record(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
 
+class Project(Record):
+    id: str
+    name: str
+
+
 class Dataset(Record):
     id: str
     name: str
