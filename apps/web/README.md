@@ -22,7 +22,7 @@ npm run typecheck
 npm run build
 ```
 
-Deployment and live API integration are tracked in subsequent GitHub issues.
+See the [deployment guide](../../docs/09-DEPLOYMENT.md) for the public showcase and the [Phase 2 backlog](../../docs/10-PHASE-2-BACKLOG.md) for the proposed private dashboard.
 
 ## Local API mode
 

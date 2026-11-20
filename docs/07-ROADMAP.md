@@ -1,30 +1,39 @@
 # MVP Roadmap
 
-## Week 1: Foundations
-Finalize requirements and ADRs; initialize monorepo, CI, auth skeleton, PostgreSQL schema, and project API.
+## Phase 1 — Public showcase
 
-**Exit:** Authenticated user can create a project in a test environment; CI passes.
+The sample dashboard, run details and comparisons, frontend CI, and authenticated
+read API are on `main`. Public release verification is tracked in
+[#5](https://github.com/durgarao3d6/ai-engineering-platform/issues/5) and
+[#10](https://github.com/durgarao3d6/ai-engineering-platform/issues/10).
+Use the [deployment guide](09-DEPLOYMENT.md) to verify the Vercel frontend and
+Render API and record verified URLs.
 
-## Week 2: Evaluation engine
-Implement dataset/case/config versions, sandbox runner prototype, deterministic checks, and trace collection.
+**Exit:** The public sample UI and production API pass their respective smoke
+checks, a disposable token passes the authenticated API check, and the README
+links to the verified deployments.
 
-**Exit:** At least five fixture tasks run with stored outcomes.
+## Phase 2 — Private evaluation pilot
 
-## Week 3: Comparisons and GitHub
-Add run comparison dashboard, GitHub App integration, webhook validation, approvals, and failure handling.
+Import previously completed CI results into one private project. Show a
+comparison against an approved baseline and report known regressions through
+a GitHub Actions job summary. The [Phase 2 backlog](10-PHASE-2-BACKLOG.md)
+defines the proposed implementation order, dependencies, and acceptance checks.
 
-**Exit:** Candidate vs baseline comparison works; unauthorized writes are denied.
+**Exit:** A pilot user imports a baseline and a candidate, reviews a known
+regression in the private dashboard, and can find the corresponding GitHub
+job summary. Duplicate and cross-workspace access checks pass.
 
-## Week 4: Hardening and pilot
-Test isolation, idempotency, RBAC, retry behavior, observability, and pilot onboarding.
+## Later work
 
-**Exit:** A pilot team completes an end-to-end evaluation with documented limitations.
+Review the [runner ADR](adr/0001-isolated-evaluation-runner.md) after the
+showcase under [#11](https://github.com/durgarao3d6/ai-engineering-platform/issues/11).
+Isolation, time bounds, and approval controls are required before hosted
+evaluation execution. The broader roadmap includes task authoring, GitHub PR
+investigation, model routing, browser QA, and operational monitoring.
 
-## Backlog after MVP
-PR failure investigation -> model routing -> browser QA -> AgentOps governance -> enterprise features.
+## Risks and sequencing
 
-## Risks
-Sandbox complexity, evaluation quality, provider cost variability, GitHub permissions, and tenant isolation.
-
-## Estimation note
-Four weeks is a planning hypothesis for a tightly scoped prototype, not a committed production release date.
+The private pilot depends on trustworthy run provenance, tenant isolation,
+and correct baseline selection. Hosted execution adds sandbox, permission,
+and provider-cost risks. The milestones above define acceptance criteria.

@@ -1,5 +1,10 @@
 # System Architecture
 
+The execution architecture below describes the longer-term design. The
+[Phase 1 showcase](09-DEPLOYMENT.md) serves sample results and authenticated
+workspace reads. The [Phase 2 pilot](10-PHASE-2-BACKLOG.md) adds ingestion and
+comparison of completed results from existing CI.
+
 ## Logical components
 1. Next.js UI: workspaces, evaluation authoring, run results, comparisons.
 2. FastAPI service: authentication integration, authorization, project/task/config APIs.

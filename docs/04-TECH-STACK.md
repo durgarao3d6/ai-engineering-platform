@@ -5,7 +5,7 @@
 | Web | Next.js + TypeScript | Dashboard and typed UI |
 | API | FastAPI + Pydantic | Typed Python endpoints |
 | Database | PostgreSQL | Relational state and migrations |
-| Migrations | Alembic | Versioned schema changes |
+| Migrations | Versioned SQL via `app.migrate` | Apply ordered schema changes in PostgreSQL |
 | Queue | Redis + Celery | Background jobs and retries |
 | Sandbox | Ephemeral containers with strict isolation | Contain untrusted code |
 | GitHub | GitHub App + REST/webhooks | Scoped repository access |
@@ -20,5 +20,7 @@ Provider-neutral adapter with explicit model version, request limits, timeout, t
 ## Selection criteria
 Security, operational simplicity, cost, developer familiarity, portability, and observability.
 
-## Not yet decided
-Hosting vendor, authentication service, secret manager, sandbox runtime, artifact storage, and license.
+## Open decisions
+The [Phase 1 showcase](09-DEPLOYMENT.md) is configured for Vercel and Render.
+The pilot still needs a sign-in approach. Long-term hosting, secret management,
+sandbox runtime, artifact storage, and the project license remain open.

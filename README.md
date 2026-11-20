@@ -69,11 +69,9 @@ The initial MVP will let a team:
 
 | Phase | Capability | Status |
 | --- | --- | --- |
-| 1 | Agent Evaluation Platform: datasets, sandbox runs, tests, comparisons | **Planned MVP** |
-| 2 | GitHub PR investigation and proposed fixes | Future |
-| 3 | Multi-model routing based on task, cost, and quality | Future |
-| 4 | Browser-based QA and end-to-end journey tests | Future |
-| 5 | Expanded AgentOps monitoring, policy, and governance | Future |
+| 1 | Read-only evaluation showcase with sample runs and comparisons | Merged, public deployment verification pending |
+| 2 | Private pilot with CI result imports, approved baselines, and regression reporting | Proposed |
+| Later | Isolated evaluation execution, GitHub PR investigation, model routing, browser QA, and AgentOps | Future |
 
 We will prioritize reliable evaluation before increasing agent autonomy.
 
@@ -120,6 +118,8 @@ Developer / Engineering Team
 | [Security](docs/06-SECURITY.md) | Permissions, isolation, and audit controls |
 | [Roadmap](docs/07-ROADMAP.md) | Milestones, risks, and exit criteria |
 | [Development guidelines](docs/08-DEVELOPMENT.md) | Quality standards and contribution process |
+| [Showcase deployment](docs/09-DEPLOYMENT.md) | Vercel and Render setup and smoke checks |
+| [Phase 2 backlog](docs/10-PHASE-2-BACKLOG.md) | Proposed private pilot issues and acceptance criteria |
 
 ## Guiding principles
 
