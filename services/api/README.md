@@ -50,3 +50,22 @@ development, `/v1/demo/datasets`, `/v1/demo/runs`, `/v1/demo/runs/{run_id}` and
 `/v1/demo/runs/{run_id}/results` provide deterministic seeded samples. The API
 labels every sample response with `source: "sample"` and omits these routes from
 production.
+
+## Issue a starter workspace token on Windows
+
+From `services/api` in PowerShell, copy the **External Database URL** for the
+migration administrator in Render. Then type this command by hand to preserve
+the URL on your clipboard.
+
+```powershell
+uv run --locked python -m app.provision_workspace --subject first-login --windows-clipboard
+```
+
+The first run creates a reader and a project. Rerunning with the same subject
+issues another one-hour token for the same reader. The command prints progress
+and replaces the clipboard contents with the token on success. Paste the token
+into the private workspace sign-in form. The project starts empty.
+
+On other platforms, set `PLATFORM_DATABASE_URL` or enter the administrator URL
+when prompted, and omit `--windows-clipboard`. The command writes the token
+to standard output and progress to standard error.
