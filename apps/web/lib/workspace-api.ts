@@ -15,12 +15,24 @@ export class WorkspaceApiError extends Error {
   }
 }
 
+function configuredWorkspaceOrigin() {
+  const override = process.env.WORKSPACE_API_URL?.trim();
+  if (override) return override;
+
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    process.env.VERCEL_PROJECT_PRODUCTION_URL === "ai-engineering-platform-eta.vercel.app"
+  ) {
+    return "https://ai-engineering-platform-api-python.onrender.com";
+  }
+}
+
 export function workspaceConfigured() {
-  return Boolean(process.env.WORKSPACE_API_URL?.trim());
+  return Boolean(configuredWorkspaceOrigin());
 }
 
 function workspaceOrigin(): string {
-  const configured = process.env.WORKSPACE_API_URL?.trim();
+  const configured = configuredWorkspaceOrigin();
   if (!configured) throw new Error("Workspace API is unavailable.");
   const url = new URL(configured);
   const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);

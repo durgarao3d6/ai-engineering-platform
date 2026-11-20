@@ -8,13 +8,18 @@ trap 'rm -f "$body"' EXIT
 
 check() {
   curl --fail --silent --show-error --location --max-time 30 "$base_url$1" -o "$body"
-  if ! grep -Fq "$2" "$body"; then
-    printf 'Expected "%s" at %s\n' "$2" "$1" >&2
-    exit 1
-  fi
+  path=$1
+  shift
+  for expected in "$@"; do
+    if grep -Fq "$expected" "$body"; then
+      return
+    fi
+  done
+  printf 'Expected one of "%s" at %s\n' "$*" "$path" >&2
+  exit 1
 }
 
-check / 'Open sample dashboard'
+check / 'Open sample dashboard' 'Workspace access token'
 check /dashboard 'Sample data'
 check /dashboard/runs/checkout-baseline 'Reject expired coupon'
 check '/dashboard/compare?baseline=checkout-baseline&candidate=checkout-candidate' 'Fixed'
