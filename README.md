@@ -69,7 +69,7 @@ The initial MVP will let a team:
 
 | Phase | Capability | Status |
 | --- | --- | --- |
-| 1 | Read-only evaluation showcase with sample runs and comparisons | Merged, public deployment verification pending |
+| 1 | Read-only evaluation showcase with sample runs and comparisons | Deployed, public smoke checks passed |
 | 2 | Private pilot with CI result imports, approved baselines, and regression reporting | Proposed |
 | Later | Isolated evaluation execution, GitHub PR investigation, model routing, browser QA, and AgentOps | Future |
 
@@ -126,6 +126,12 @@ Developer / Engineering Team
 **Evidence over confidence.** **Evaluation before automation.** **Least privilege.** **Human approval for sensitive actions.** **Reproducible results.**
 
 ## Current status and contributing
+
+The [production workspace](https://ai-engineering-platform-eta.vercel.app/)
+opens with token sign-in. Try the
+[sample dashboard](https://ai-engineering-platform-eta.vercel.app/dashboard)
+without signing in. The [production API](https://ai-engineering-platform-api-python.onrender.com/ready)
+is hosted on Render.
 
 Start the [Next.js showcase](apps/web/README.md) with bundled samples, or run
 the [FastAPI service](services/api/README.md) to exercise the development API and

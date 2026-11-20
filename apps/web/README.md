@@ -45,6 +45,11 @@ is supported for development. Deploy the API revision that provides
 `GET /v1/projects` first. Keep `EVALUATION_API_URL` unset on the public site
 to continue serving the bundled sample dashboard.
 
+The official Vercel production project already defaults to the project's Render
+API. Other deployments can set `WORKSPACE_API_URL` explicitly. A configured
+deployment opens the workspace from `/`, with the sample dashboard at
+`/dashboard`.
+
 Open `/workspace` and enter a short-lived access token provisioned by an
 administrator. The token is held in a one-hour HTTP-only cookie and each
 read is checked by the API. Sign out clears the browser session. Token
